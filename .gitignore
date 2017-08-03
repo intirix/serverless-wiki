@@ -1,0 +1,7 @@
+.contents
+.contents*
+*.zip
+*.swp
+*.pyc
+*.swo
+.coverage
