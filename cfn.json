@@ -10,6 +10,17 @@
 
 
 
+
+    "UserPool": {
+      "Type" : "AWS::Cognito::UserPool",
+      "Properties": {
+        "UserPoolName": "WikiPool"
+      }
+    },
+
+
+
+
     "Role": {
       "Type" : "AWS::IAM::Role",
       "Properties" : {
