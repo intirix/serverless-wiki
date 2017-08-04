@@ -1,0 +1,56 @@
+swagger: "2.0"
+info:
+  description: "API to access the Serverless Wiki"
+  version: "1.0.0"
+  title: "Serverless Wiki"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "swiki.example.com"
+basePath: "/v1"
+schemes:
+- "http"
+- "https"
+paths:
+  /pages/{page}:
+    get:
+      summary: "Get a page"
+      description: ""
+      operationId: "getPage"
+      produces:
+      - "application/json"
+     parameters:
+      - in: path
+        name: page
+        required: true
+        schema:
+          type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Page"
+        404:
+          description: "Page not found"
+
+
+definitions:
+  Page:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "Name of the page"
+      html:
+        type: "string"
+        description: "Rendered html"
+      content:
+        type: "string"
+        description: "Content of the page"
+      contentType:
+        type: "string"
+        description: "Type of content the page is encoded in"
+        enum:
+        - "MediaWikiMarkup"
+
+
