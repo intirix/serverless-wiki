@@ -11,8 +11,8 @@ workspace="$( dirname $0 )"
 	if [ ! -e .contents ]
 	then
 		virtualenv .contents
-		.contents/bin/pip install -r requirements.txt
 	fi
+	.contents/bin/pip install -r requirements.txt
 
 	.contents/bin/coverage erase
 	for x in *_test.py
@@ -21,11 +21,17 @@ workspace="$( dirname $0 )"
 	done
 	.contents/bin/coverage report
 
+	if [ ! -e .contents_package ]
+	then
+		virtualenv .contents_package
+	fi
+	.contents/bin/pip install -r requirements.package.txt
+
 	echo zip lambda.zip *.py
 	zip lambda.zip *.py
 
 	(
-		cd .contents/lib/python2.7/site-packages
+		cd .contents_package/lib/python2.7/site-packages
 		echo zip -u -r "$workspace/lambda.zip" *
 		zip -u -r "$workspace/lambda.zip" *
 	)
