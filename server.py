@@ -17,6 +17,10 @@ class Server:
 		self.db = db
 		self.log = logging.getLogger("server")
 
+	def init(self):
+		if not self.db.doesPageExist("Index"):
+			self.db.updatePage("Index","<system>","Welcome")
+
 	def createContext(self,username):
 		ctx = Context(username)
 		return ctx
