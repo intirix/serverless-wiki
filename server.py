@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 import logging
+import mediawiki_parser.preprocessor
+import mediawiki_parser.html
 
 class Context:
 
@@ -30,7 +32,25 @@ class Server:
 
 		data = self.db.getPage(page)
 		obj["markup"] = data["body"]
+		obj["html"] = self._render(data["body"])
 		obj["lastModifiedUser"] = data["user"]
 
 		return obj
+
+
+	def _render(self,markup):
+		templates = {}
+		allowed_tags = []
+		allowed_self_closing_tags = []
+		allowed_attributes = []
+		interwiki = {}
+		namespaces = {}
+
+		preprocessor = mediawiki_parser.preprocessor.make_parser(templates)
+
+		parser = mediawiki_parser.html.make_parser(allowed_tags, allowed_self_closing_tags, allowed_attributes, interwiki, namespaces)
+
+		preprocessed_text = preprocessor.parse(markup)
+		output = parser.parse(preprocessed_text.leaves())
+		return output.leaf()
 
