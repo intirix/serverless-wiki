@@ -18,6 +18,14 @@
       }
     },
 
+    "UserPoolClientWeb": {
+      "Type" : "AWS::Cognito::UserPoolClient",
+      "Properties": {
+        "ClientName": "WebClient",
+        "UserPoolId": {"Ref": "UserPool"},
+        "GenerateSecret": "false"
+      }
+    },
 
 
 
@@ -105,6 +113,57 @@
     },
 
 
+    "LambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:invokeFunction",
+        "FunctionName": {"Fn::GetAtt": ["Function", "Arn"]},
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {"Fn::Join": ["",[
+          "arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":",
+          {"Ref": "RestApi"}, "/*/*/*"]
+        ] }
+      }
+    },
+
+
+    "RestDeployment": {
+      "DependsOn": [
+        "RestApi",
+        "Function",
+        "RestMethodGETV1Pages"
+      ],
+      "Type": "AWS::ApiGateway::Deployment",
+      "Properties": {
+        "RestApiId" : {"Ref":"RestApi"}
+      }
+    },
+
+    "RestStage": {
+      "DependsOn": [
+        "RestDeployment"
+      ],
+      "Type": "AWS::ApiGateway::Stage",
+      "Properties": {
+        "DeploymentId": {"Ref":"RestDeployment"},
+        "RestApiId" : {"Ref":"RestApi"},
+        "MethodSettings": [
+          {
+            "DataTraceEnabled": true,
+            "HttpMethod": "*",
+            "LoggingLevel": "INFO",
+            "ResourcePath": "/*"
+          }
+        ],
+        "StageName": "prod"
+      }
+    },
+
+
+
+
+
+
 
     "RestResourceV1": {
       "DependsOn": [
@@ -116,7 +175,56 @@
         "PathPart" : "v1",
         "RestApiId" : {"Ref":"RestApi"}
       }
+    },
+
+
+
+
+
+    "RestResourceV1Pages": {
+      "DependsOn": [
+        "RestResourceV1",
+        "Function"
+      ],
+      "Type" : "AWS::ApiGateway::Resource",
+      "Properties" : {
+        "ParentId" : {"Ref":"RestResourceV1"},
+        "PathPart" : "pages",
+        "RestApiId" : {"Ref":"RestApi"}
+      }
+    },
+
+    "RestMethodGETV1Pages": {
+      "DependsOn": [
+        "RestResourceV1Pages",
+        "LambdaPermission"
+      ],
+      "Type" : "AWS::ApiGateway::Method",
+      "Properties" : {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {"Fn::Join": [ "", [
+              "arn:aws:apigateway:",
+              {"Ref":"AWS::Region"},
+              ":lambda:path/2015-03-31/functions/",
+              {"Fn::GetAtt" : [ "Function", "Arn" ]},
+              "/invocations"
+            ]]}
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200"
+          }
+        ],
+        "ResourceId": {"Ref":"RestResourceV1Pages"},
+        "RestApiId": {"Ref":"RestApi"}
+      }
     }
+
+
 
 
   }
