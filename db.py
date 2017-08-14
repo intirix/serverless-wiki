@@ -2,7 +2,7 @@
 
 import boto3
 import logging
-
+import json
 
 class DBS3:
 
@@ -11,6 +11,14 @@ class DBS3:
 		self.bucket = bucket
 
 		self.client = boto3.client('s3')
+
+	def updatePage(self,page,user,fmt,body):
+		data={}
+		data["user"]=user
+		data["format"]=fmt
+		data["body"]=body
+		text=json.dumps(data,indent=2)
+		self.client.put_object(Body=text,ContentType="application/json",Key="/"+page+".json")
 
 class DBMemory:
 
