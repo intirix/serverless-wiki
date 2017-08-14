@@ -18,10 +18,10 @@ class DBMemory:
 		self.log = logging.getLogger("DB.Memory")
 		self.db = {}
 
-	def updatePage(self,page,user,body):
+	def updatePage(self,page,user,fmt,body):
 		if not page in self.db:
 			self.db[page]=[]
-		self.db[page].insert(0,{'user':user,'body':body})
+		self.db[page].insert(0,{'user':user,'format':fmt,'body':body})
 
 	def getPage(self,page):
 		if page in self.db:

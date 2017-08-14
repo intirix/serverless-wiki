@@ -9,7 +9,7 @@ class TestDBMemory(unittest.TestCase):
 	def testCrud(self):
 		obj = db.DBMemory()
 		self.assertFalse(obj.doesPageExist('index'))
-		obj.updatePage('index','admin','my body')
+		obj.updatePage('index','admin','mediawiki','my body')
 		self.assertTrue(obj.doesPageExist('index'))
 
 		self.assertEquals("admin",obj.getPage('index')['user'])
@@ -17,10 +17,10 @@ class TestDBMemory(unittest.TestCase):
 
 	def testVersions(self):
 		obj = db.DBMemory()
-		obj.updatePage('index','admin','my body')
+		obj.updatePage('index','admin','mediawiki','my body')
 		self.assertEquals("my body",obj.getPage('index')['body'])
 		self.assertEquals(1,len(obj.listPageVersions('index')))
-		obj.updatePage('index','steve','new body')
+		obj.updatePage('index','steve','mediawiki','new body')
 		self.assertEquals("new body",obj.getPage('index')['body'])
 		self.assertEquals(2,len(obj.listPageVersions('index')))
 		self.assertEquals("my body",obj.getPageVersion('index',1)['body'])

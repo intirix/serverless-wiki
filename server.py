@@ -31,14 +31,20 @@ class Server:
 		obj = {}
 
 		data = self.db.getPage(page)
+		obj["format"] = data["format"]
 		obj["markup"] = data["body"]
-		obj["html"] = self._render(data["body"])
+		obj["html"] = self._render(data["format"],data["body"])
 		obj["lastModifiedUser"] = data["user"]
 
 		return obj
 
 
-	def _render(self,markup):
+	def _render(self,fmt,markup):
+		if fmt=='mediawiki':
+			return self._renderMediaWiki(markup)
+		return markup
+
+	def _renderMediaWiki(self,markup):
 		templates = {}
 		allowed_tags = []
 		allowed_self_closing_tags = []
