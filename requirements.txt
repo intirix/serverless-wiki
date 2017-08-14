@@ -1,3 +1,4 @@
 boto3
 coverage
 mediawiki-parser
+bleach

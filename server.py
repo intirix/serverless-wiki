@@ -3,6 +3,7 @@
 import logging
 import mediawiki_parser.preprocessor
 import mediawiki_parser.html
+import bleach
 
 class Context:
 
@@ -33,11 +34,13 @@ class Server:
 		data = self.db.getPage(page)
 		obj["format"] = data["format"]
 		obj["markup"] = data["body"]
-		obj["html"] = self._render(data["format"],data["body"])
+		obj["html"] = self.sanitize(self._render(data["format"],data["body"]))
 		obj["lastModifiedUser"] = data["user"]
 
 		return obj
 
+	def sanitize(self,html):
+		return bleach.clean(html)
 
 	def _render(self,fmt,markup):
 		if fmt=='mediawiki':

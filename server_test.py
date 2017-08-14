@@ -11,6 +11,11 @@ class TestServer(unittest.TestCase):
 
 		self.assertEquals("<body>\n<h1> Test </h1>\n</body>",obj._renderMediaWiki("= Test =\n"))
 
+	def testSanitize(self):
+		obj = server.Server(None)
+		self.assertFalse("<script>" in obj.sanitize("<script>evil();</script>"))
+
+
 
 if __name__ == '__main__':
 	#FORMAT = "%(asctime)-15s %(message)s"
