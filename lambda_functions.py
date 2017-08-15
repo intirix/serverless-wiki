@@ -17,8 +17,9 @@ class LambdaCommon:
                 if "PAGE_BUCKET" in os.environ:
                         pageBucket = os.environ["PAGE_BUCKET"]
 
-		self.db = db.DBMemory()
+		self.db = db.DBS3(pageBucket)
 		self.server = server.Server(self.db)
+		self.server.init()
 		self.resp = None
 		self.ctx = None
 

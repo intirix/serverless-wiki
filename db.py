@@ -12,13 +12,36 @@ class DBS3:
 
 		self.client = boto3.client('s3')
 
+	def doesPageExist(self,page):
+		try:
+			self.client.head_object(Bucket=self.bucket,Key="/"+page+".json")
+			return True
+		except botocore.exceptions.ClientError as e:
+			if e.response['Error']['Code'] == "404":
+				return False
+			raise e
+
+	def getPage(self,page):
+		try:
+			obj = self.client.get_object(Bucket=self.bucket,Key="/"+page+".json")
+			contents = json.load(obj["Body"])
+			ret = {}
+			ret["user"] = contents["user"]
+			ret["format"] = contents["format"]
+			ret["body"] = contents["body"]
+			return ret
+		except botocore.exceptions.ClientError as e:
+			if e.response['Error']['Code'] == "404":
+				return None
+			raise e
+
 	def updatePage(self,page,user,fmt,body):
 		data={}
 		data["user"]=user
 		data["format"]=fmt
 		data["body"]=body
 		text=json.dumps(data,indent=2)
-		self.client.put_object(Body=text,ContentType="application/json",Key="/"+page+".json")
+		self.client.put_object(Bucket=self.bucket,Body=text,ContentType="application/json",Key="/"+page+".json")
 
 class DBMemory:
 
