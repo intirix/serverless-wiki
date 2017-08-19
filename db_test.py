@@ -13,18 +13,18 @@ class TestDBMemory(unittest.TestCase):
 		self.assertTrue(obj.doesPageExist('index'))
 
 		self.assertEquals("admin",obj.getPage('index')['user'])
-		self.assertEquals("my body",obj.getPage('index')['body'])
+		self.assertEquals("my body",obj.getPage('index')['content'])
 
 	def testVersions(self):
 		obj = db.DBMemory()
 		obj.updatePage('index','admin','mediawiki','my body')
-		self.assertEquals("my body",obj.getPage('index')['body'])
+		self.assertEquals("my body",obj.getPage('index')['content'])
 		self.assertEquals(1,len(obj.listPageVersions('index')))
 		obj.updatePage('index','steve','mediawiki','new body')
-		self.assertEquals("new body",obj.getPage('index')['body'])
+		self.assertEquals("new body",obj.getPage('index')['content'])
 		self.assertEquals(2,len(obj.listPageVersions('index')))
-		self.assertEquals("my body",obj.getPageVersion('index',1)['body'])
-		self.assertEquals("new body",obj.getPageVersion('index',2)['body'])
+		self.assertEquals("my body",obj.getPageVersion('index',1)['content'])
+		self.assertEquals("new body",obj.getPageVersion('index',2)['content'])
 
 
 if __name__ == '__main__':

@@ -58,6 +58,10 @@ def single_func(event, context):
 
         if matches(event,"GET","/v1/pages/{page}"):
                 return get_page(event, context)
+        if matches(event,"POST","/v1/pages/{page}"):
+                return update_page(event, context)
+        if matches(event,"PUT","/v1/pages/{page}"):
+                return update_page(event, context)
 
 	return {"statusCode":404}
 
@@ -71,6 +75,26 @@ def get_page(event, context):
                 page = event["pathParameters"]["page"]
 
 		resp = obj.server.getPage(obj.ctx,page)
+
+                return {"statusCode":200,"body":json.dumps(resp,indent=2)}
+        except server.AccessDeniedException, e:
+                obj.log.exception("Access Denied")
+                return {"statusCode":403}
+        except:
+                obj.log.exception("Error")
+                return {"statusCode":500}
+        return {"statusCode":404}
+
+def update_page(event, context):
+        obj = LambdaCommon()
+        if obj.getResponse() != None:
+                return obj.getResponse()
+
+        try:
+                page = event["pathParameters"]["page"]
+		body = get_body(event)
+
+		resp = obj.server.updatePage(obj.ctx,page,body)
 
                 return {"statusCode":200,"body":json.dumps(resp,indent=2)}
         except server.AccessDeniedException, e:

@@ -32,12 +32,18 @@ class Server:
 		obj = {}
 
 		data = self.db.getPage(page)
-		obj["format"] = data["format"]
-		obj["markup"] = data["body"]
+		obj["contentType"] = data["format"]
+		obj["content"] = data["body"]
 		obj["html"] = self.sanitize(self._render(data["format"],data["body"]))
 		obj["lastModifiedUser"] = data["user"]
 
 		return obj
+
+	def updatePage(self,ctx,page,data):
+		contentType = data["contentType"]
+		content = data["content"]
+		self.db.updatePage(self,page,ctx.user,contentType,content)
+		return self.getPage(ctx,page)
 
 	def sanitize(self,html):
 		return bleach.clean(html)

@@ -131,7 +131,9 @@
       "DependsOn": [
         "RestApi",
         "Function",
-        "RestMethodGETV1Pages"
+        "RestMethodGETV1Pages",
+        "RestMethodPOSTV1Pages",
+        "RestMethodPUTV1Pages"
       ],
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
@@ -203,6 +205,71 @@
       "Properties" : {
         "AuthorizationType": "NONE",
         "HttpMethod": "GET",
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {"Fn::Join": [ "", [
+              "arn:aws:apigateway:",
+              {"Ref":"AWS::Region"},
+              ":lambda:path/2015-03-31/functions/",
+              {"Fn::GetAtt" : [ "Function", "Arn" ]},
+              "/invocations"
+            ]]}
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200"
+          }
+        ],
+        "ResourceId": {"Ref":"RestResourceV1Pages"},
+        "RestApiId": {"Ref":"RestApi"}
+      }
+    },
+
+
+
+    "RestMethodPOSTV1Pages": {
+      "DependsOn": [
+        "RestResourceV1Pages",
+        "LambdaPermission"
+      ],
+      "Type" : "AWS::ApiGateway::Method",
+      "Properties" : {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {"Fn::Join": [ "", [
+              "arn:aws:apigateway:",
+              {"Ref":"AWS::Region"},
+              ":lambda:path/2015-03-31/functions/",
+              {"Fn::GetAtt" : [ "Function", "Arn" ]},
+              "/invocations"
+            ]]}
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200"
+          }
+        ],
+        "ResourceId": {"Ref":"RestResourceV1Pages"},
+        "RestApiId": {"Ref":"RestApi"}
+      }
+    },
+
+
+
+
+    "RestMethodPUTV1Pages": {
+      "DependsOn": [
+        "RestResourceV1Pages",
+        "LambdaPermission"
+      ],
+      "Type" : "AWS::ApiGateway::Method",
+      "Properties" : {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "PUT",
         "Integration": {
           "Type": "AWS_PROXY",
           "IntegrationHttpMethod": "POST",
