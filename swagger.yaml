@@ -19,7 +19,7 @@ paths:
       operationId: "getPage"
       produces:
       - "application/json"
-     parameters:
+      parameters:
       - in: path
         name: page
         required: true
@@ -51,6 +51,7 @@ definitions:
         type: "string"
         description: "Type of content the page is encoded in"
         enum:
-        - "MediaWikiMarkup"
+        - "mediawiki"
+        - "plaintext"
 
 
