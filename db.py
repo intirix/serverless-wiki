@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import boto3
+import botocore
 import logging
 import json
 
