@@ -13,9 +13,12 @@ class DBS3:
 
 		self.client = boto3.client('s3')
 
+	def getBaseKey(self,page):
+		return page+".json"
+
 	def doesPageExist(self,page):
 		try:
-			self.client.head_object(Bucket=self.bucket,Key="/"+page+".json")
+			self.client.head_object(Bucket=self.bucket,Key=self.getBaseKey(page))
 			return True
 		except botocore.exceptions.ClientError as e:
 			if e.response['Error']['Code'] == "404":
@@ -24,7 +27,7 @@ class DBS3:
 
 	def getPage(self,page):
 		try:
-			obj = self.client.get_object(Bucket=self.bucket,Key="/"+page+".json")
+			obj = self.client.get_object(Bucket=self.bucket,Key=self.getBaseKey(page))
 			contents = json.load(obj["Body"])
 			ret = {}
 			ret["user"] = contents["user"]
@@ -42,7 +45,7 @@ class DBS3:
 		data["contentType"]=contentType
 		data["content"]=content
 		text=json.dumps(data,indent=2)
-		self.client.put_object(Bucket=self.bucket,Body=text,ContentType="application/json",Key="/"+page+".json")
+		self.client.put_object(Bucket=self.bucket,Body=text,ContentType="application/json",Key=self.getBaseKey(page))
 		return True
 
 class DBMemory:

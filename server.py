@@ -32,9 +32,9 @@ class Server:
 		obj = {}
 
 		data = self.db.getPage(page)
-		obj["contentType"] = data["format"]
-		obj["content"] = data["body"]
-		obj["html"] = self.sanitize(self._render(data["format"],data["body"]))
+		obj["contentType"] = data["contentType"]
+		obj["content"] = data["content"]
+		obj["html"] = self.sanitize(self._render(data["contentType"],data["content"]))
 		obj["lastModifiedUser"] = data["user"]
 
 		return obj
