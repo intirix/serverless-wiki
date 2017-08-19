@@ -4,6 +4,7 @@ import logging
 import mediawiki_parser.preprocessor
 import mediawiki_parser.html
 import bleach
+import cgi
 
 class Context:
 
@@ -49,9 +50,15 @@ class Server:
 		return bleach.clean(html)
 
 	def _render(self,fmt,markup):
-		if fmt=='mediawiki':
-			return self._renderMediaWiki(markup)
-		return markup
+		try:
+			if fmt=='mediawiki':
+				return self._renderMediaWiki(markup)
+		except Exception, e:
+			return self._renderText(str(e))
+		return self._renderText(markup)
+
+	def _renderText(self,markup):
+		return cgi.escape(markup).encode('ascii', 'xmlcharrefreplace')
 
 	def _renderMediaWiki(self,markup):
 		templates = {}
@@ -65,7 +72,7 @@ class Server:
 
 		parser = mediawiki_parser.html.make_parser(allowed_tags, allowed_self_closing_tags, allowed_attributes, interwiki, namespaces)
 
-		preprocessed_text = preprocessor.parse(markup)
+		preprocessed_text = preprocessor.parse(markup+"\n")
 		output = parser.parse(preprocessed_text.leaves())
 		return output.leaf()
 

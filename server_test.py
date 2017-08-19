@@ -10,11 +10,16 @@ class TestServer(unittest.TestCase):
 		obj = server.Server(None)
 
 		self.assertEquals("<body>\n<h1> Test </h1>\n</body>",obj._renderMediaWiki("= Test =\n"))
+		self.assertEquals("<body>\n<h1> Test </h1>\n</body>",obj._renderMediaWiki("= Test ="))
 
 	def testSanitize(self):
 		obj = server.Server(None)
 		self.assertFalse("<script>" in obj.sanitize("<script>evil();</script>"))
 
+	def testFailedRender(self):
+		obj = server.Server(None)
+		html = obj._render("mediawiki","= Welcome")
+		self.assertTrue("= Welcome" in html)
 
 
 if __name__ == '__main__':
