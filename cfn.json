@@ -69,6 +69,16 @@
                 "logs:*"
               ],
               "Resource": "arn:aws:logs:*:*:*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:*"
+              ],
+              "Resource": [
+                {"Fn::GetAtt" : [ "PageBucket", "Arn" ]},
+                {"Fn::Join" : ["",[{"Fn::GetAtt" : [ "PageBucket", "Arn" ]},"/*"]]}
+              ]
             }
           ]
         }
