@@ -22,7 +22,7 @@ class Server:
 
 	def init(self):
 		if not self.db.doesPageExist("Index"):
-			self.db.updatePage("Index","<system>","Welcome")
+			self.db.updatePage("Index","<system>","mediawiki","= Welcome =")
 
 	def createContext(self,username):
 		ctx = Context(username)

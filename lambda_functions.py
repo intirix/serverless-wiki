@@ -11,17 +11,19 @@ class LambdaCommon:
 
         def __init__(self):
                 self.log = logging.getLogger("Lambda")
-                self.system = system.System()
 
-                pageBucket = "pagebucket"
-                if "PAGE_BUCKET" in os.environ:
-                        pageBucket = os.environ["PAGE_BUCKET"]
-
-		self.db = db.DBS3(pageBucket)
+		self.db = self.createDb()
 		self.server = server.Server(self.db)
 		self.server.init()
 		self.resp = None
 		self.ctx = None
+
+	def createDb(self):
+                pageBucket = "pagebucket"
+                if "PAGE_BUCKET" in os.environ:
+                        pageBucket = os.environ["PAGE_BUCKET"]
+
+		return db.DBS3(pageBucket)
 
 	def getResponse(self):
 		return self.resp

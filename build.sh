@@ -25,7 +25,7 @@ workspace="$( dirname $0 )"
 	then
 		virtualenv .contents_package
 	fi
-	.contents/bin/pip install -r requirements.package.txt
+	.contents_package/bin/pip install -r requirements.package.txt
 
 	echo zip lambda.zip *.py
 	zip lambda.zip *.py
