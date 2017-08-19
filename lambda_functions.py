@@ -5,7 +5,7 @@ import logging
 import server
 import json
 import base64
-
+import os
 
 class LambdaCommon:
 
@@ -18,10 +18,14 @@ class LambdaCommon:
 		self.resp = None
 		self.ctx = None
 
-	def createDb(self):
+	def getPageBucket(self):
                 pageBucket = "pagebucket"
                 if "PAGE_BUCKET" in os.environ:
                         pageBucket = os.environ["PAGE_BUCKET"]
+		return pageBucket
+
+	def createDb(self):
+                pageBucket = self.getPageBucket()
 
 		return db.DBS3(pageBucket)
 

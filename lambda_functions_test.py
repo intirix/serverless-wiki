@@ -4,6 +4,7 @@ import unittest
 import db
 import lambda_functions
 import logging
+import os
 
 class LambdaCommon(lambda_functions.LambdaCommon):
 
@@ -14,6 +15,13 @@ class TestLambdaFunctions(unittest.TestCase):
 
 	def testCommon(self):
 		obj = LambdaCommon()
+
+	def testPageBucket(self):
+		obj = LambdaCommon()
+		self.assertEquals("pagebucket",obj.getPageBucket())
+
+		os.environ["PAGE_BUCKET"] = "OVERRIDE_BUCKET"
+		self.assertEquals("OVERRIDE_BUCKET",obj.getPageBucket())
 
 
 
