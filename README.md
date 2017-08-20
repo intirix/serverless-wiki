@@ -30,3 +30,4 @@ aws --region=us-east-1 cloudformation delete-stack --stack-name ServerlessWiki &
 ### Generate the JS client
 
 sudo docker run --rm -v ${PWD}:/local swaggerapi/swagger-codegen-cli generate -i /local/swagger.yaml -l javascript-closure-angular -o /local/web/js/wikiapi
+sudo docker run --rm -v ${PWD}:/local swaggerapi/swagger-codegen-cli generate -i /local/swagger.yaml -l javascript -o /local/web/js/wikiapi
