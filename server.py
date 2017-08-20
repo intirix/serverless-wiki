@@ -20,6 +20,12 @@ class Server:
 	def __init__(self,db):
 		self.db = db
 		self.log = logging.getLogger("server")
+		self.attrs = {
+			"*": ['class'],
+			"a": ["href", "rel"],
+			"img": ["alt"]
+		}
+		self.allowedTags = ["a","img","h1","h2","h3","h4","h5","b","font","br"]
 
 	def init(self):
 		if not self.db.doesPageExist("Index"):
@@ -47,7 +53,7 @@ class Server:
 		return self.getPage(ctx,page)
 
 	def sanitize(self,html):
-		return bleach.clean(html)
+		return bleach.clean(html,tags=self.allowedTags,attributes=self.attrs)
 
 	def _render(self,fmt,markup):
 		try:

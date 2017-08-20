@@ -12,9 +12,13 @@ class TestServer(unittest.TestCase):
 		self.assertEquals("<body>\n<h1> Test </h1>\n</body>",obj._renderMediaWiki("= Test =\n"))
 		self.assertEquals("<body>\n<h1> Test </h1>\n</body>",obj._renderMediaWiki("= Test ="))
 
-	def testSanitize(self):
+	def testSanitizeEvil(self):
 		obj = server.Server(None)
 		self.assertFalse("<script>" in obj.sanitize("<script>evil();</script>"))
+
+	def testSanitizeSafe(self):
+		obj = server.Server(None)
+		self.assertEquals("<h1>Welcome</h1>",obj.sanitize("<h1>Welcome</h1>"))
 
 	def testFailedRender(self):
 		obj = server.Server(None)
