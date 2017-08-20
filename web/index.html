@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+    <script type="text/javascript" src="js/wikiapi/lib/axios/dist/axios.standalone.js"></script>
+    <script type="text/javascript" src="js/wikiapi/lib/CryptoJS/rollups/hmac-sha256.js"></script>
+    <script type="text/javascript" src="js/wikiapi/lib/CryptoJS/rollups/sha256.js"></script>
+    <script type="text/javascript" src="js/wikiapi/lib/CryptoJS/components/hmac.js"></script>
+    <script type="text/javascript" src="js/wikiapi/lib/CryptoJS/components/enc-base64.js"></script>
+    <script type="text/javascript" src="js/wikiapi/lib/url-template/url-template.js"></script>
+    <script type="text/javascript" src="js/wikiapi/lib/apiGatewayCore/sigV4Client.js"></script>
+    <script type="text/javascript" src="js/wikiapi/lib/apiGatewayCore/apiGatewayClient.js"></script>
+    <script type="text/javascript" src="js/wikiapi/lib/apiGatewayCore/simpleHttpClient.js"></script>
+    <script type="text/javascript" src="js/wikiapi/lib/apiGatewayCore/utils.js"></script>
+    <script type="text/javascript" src="js/wikiapi/apigClient.js"></script>
+  </head>
+  <body>
+
+    <div ng-app="myApp" class="">
+
+      <div class="nav">
+        <a href="#/!">Home</a>
+      </div>
+
+      <div class="header">
+      </div>
+
+      <div class="ng-view ng-scope ng-binding"></div>
+
+      <div class="footer">
+      </div>
+
+      <script type="text/javascript" src="js/app.js"></script>
+    </div>
+  </body>
+</html>
