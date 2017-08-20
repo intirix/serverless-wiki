@@ -5,6 +5,7 @@ import mediawiki_parser.preprocessor
 import mediawiki_parser.html
 import bleach
 import cgi
+import time
 
 class Context:
 
@@ -38,11 +39,20 @@ class Server:
 	def getPage(self,ctx,page):
 		obj = {}
 
+		t1 = time.time()
 		data = self.db.getPage(page)
+		t2 = time.time()
 		obj["contentType"] = data["contentType"]
 		obj["content"] = data["content"]
-		obj["html"] = self.sanitize(self._render(data["contentType"],data["content"]))
 		obj["lastModifiedUser"] = data["user"]
+
+		rendered = self._render(data["contentType"],data["content"])
+		t3 = time.time()
+		obj["html"] = self.sanitize(rendered)
+		t4 = time.time()
+		obj["time_get"] = int(1000 * ( t2 - t1 ))
+		obj["time_render"] = int(1000 * ( t3 - t2 ))
+		obj["time_sanitize"] = int(1000 * ( t4 - t3 ))
 
 		return obj
 

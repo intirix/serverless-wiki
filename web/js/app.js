@@ -32,8 +32,10 @@ app.config(function($routeProvider) {
     $scope.content = result.data.html
     console.log(result.data);
     $scope.$apply(function () {
-      //$scope.content = result.data.html;
       $scope.pageContent = $sce.trustAsHtml(result.data.html);
+      $scope.time_get = result.data.time_get;
+      $scope.time_render = result.data.time_render;
+      $scope.time_sanitize = result.data.time_sanitize;
     });
   }).catch( function(result){
     console.log("Failed");
