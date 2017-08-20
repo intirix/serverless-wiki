@@ -33,7 +33,12 @@ workspace="$( dirname $0 )"
 	(
 		cd .contents_package/lib/python2.7/site-packages
 		echo zip -u -r "$workspace/lambda.zip" *
-		zip -u -r "$workspace/lambda.zip" *
+		zip -u -r "$workspace/lambda.zip" * || code=$?
 	)
+
+	echo zip lambda.zip web/*.html
+	zip lambda.zip web/*.html
+	echo zip lambda.zip web/js/*.js
+	zip lambda.zip web/js/*.js
 
 )
