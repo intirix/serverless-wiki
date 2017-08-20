@@ -23,6 +23,14 @@ class TestLambdaFunctions(unittest.TestCase):
 		os.environ["PAGE_BUCKET"] = "OVERRIDE_BUCKET"
 		self.assertEquals("OVERRIDE_BUCKET",obj.getPageBucket())
 
+	def testaddCorsHeaders(self):
+		resp = lambda_functions.addCorsHeaders({"statusCode":200,"body":"{}"})
+		self.assertEquals(200,resp["statusCode"])
+		self.assertEquals("{}",resp["body"])
+		self.assertTrue("Authorization" in resp["headers"]["Access-Control-Allow-Headers"].split(','))
+		self.assertTrue("Content-Type" in resp["headers"]["Access-Control-Allow-Headers"].split(','))
+		self.assertTrue("GET" in resp["headers"]["Access-Control-Allow-Methods"].split(','))
+		self.assertEquals("*",resp["headers"]["Access-Control-Allow-Origin"])
 
 
 if __name__ == '__main__':

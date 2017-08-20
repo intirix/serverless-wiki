@@ -275,6 +275,9 @@
       "Properties" : {
         "AuthorizationType": "NONE",
         "HttpMethod": "GET",
+        "RequestParameters": {
+          "method.request.path.page": true
+        },
         "Integration": {
           "Type": "AWS_PROXY",
           "IntegrationHttpMethod": "POST",

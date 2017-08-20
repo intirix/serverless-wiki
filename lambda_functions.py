@@ -59,6 +59,20 @@ def matches(event,meth,path):
 
         return False
 
+def addCorsHeaders(resp):
+	headers={}
+	headers["Access-Control-Allow-Headers"] = "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token"
+	headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE,OPTIONS"
+	headers["Access-Control-Allow-Origin"] = "*"
+	if not "headers" in resp:
+		resp["headers"] = {}
+
+	for key in headers.keys():
+		if not key in resp["headers"]:
+			resp["headers"][key]=headers[key]
+	return resp
+
+
 def single_func(event, context):
         print(json.dumps(event,indent=2))
 
@@ -82,14 +96,14 @@ def get_page(event, context):
 
 		resp = obj.server.getPage(obj.ctx,page)
 
-                return {"statusCode":200,"body":json.dumps(resp,indent=2)}
+                return addCorsHeaders({"statusCode":200,"body":json.dumps(resp,indent=2)})
         except server.AccessDeniedException, e:
                 obj.log.exception("Access Denied")
-                return {"statusCode":403}
+                return addCorsHeaders({"statusCode":403})
         except:
                 obj.log.exception("Error")
-                return {"statusCode":500}
-        return {"statusCode":404}
+                return addCorsHeaders({"statusCode":500})
+        return addCorsHeaders({"statusCode":404})
 
 def update_page(event, context):
         obj = LambdaCommon()
@@ -102,14 +116,14 @@ def update_page(event, context):
 
 		resp = obj.server.updatePage(obj.ctx,page,body)
 
-                return {"statusCode":200,"body":json.dumps(resp,indent=2)}
+                return addCorsHeaders({"statusCode":200,"body":json.dumps(resp,indent=2)})
         except server.AccessDeniedException, e:
                 obj.log.exception("Access Denied")
-                return {"statusCode":403}
+                return addCorsHeaders({"statusCode":403})
         except:
                 obj.log.exception("Error")
-                return {"statusCode":500}
-        return {"statusCode":404}
+                return addCorsHeaders({"statusCode":500})
+        return addCorsHeaders({"statusCode":404})
 
 
 
