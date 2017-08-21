@@ -21,6 +21,7 @@ class Server:
 	def __init__(self,db):
 		self.db = db
 		self.log = logging.getLogger("server")
+		self.prerender = True
 		self.attrs = {
 			"*": ['class'],
 			"a": ["href", "rel"],
@@ -46,7 +47,11 @@ class Server:
 		obj["content"] = data["content"]
 		obj["lastModifiedUser"] = data["user"]
 
-		rendered = self._render(data["contentType"],data["content"])
+		rendered = None
+		if "rendered" in data:
+			rendered = data["rendered"]
+		else:
+			rendered = self._render(data["contentType"],data["content"])
 		t3 = time.time()
 		obj["html"] = self.sanitize(rendered)
 		t4 = time.time()
@@ -59,7 +64,12 @@ class Server:
 	def updatePage(self,ctx,page,data):
 		contentType = data["contentType"]
 		content = data["content"]
-		self.db.updatePage(self,page,ctx.user,contentType,content)
+
+		html = None
+		if self.prerender:
+			html = self.render(contentType,content)
+
+		self.db.updatePage(self,page,ctx.user,contentType,content,html)
 		return self.getPage(ctx,page)
 
 	def sanitize(self,html):

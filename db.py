@@ -33,17 +33,21 @@ class DBS3:
 			ret["user"] = contents["user"]
 			ret["contentType"] = contents["contentType"]
 			ret["content"] = contents["content"]
+			if "rendered" in contents:
+				ret["rendered"] = contents["rendered"]
 			return ret
 		except botocore.exceptions.ClientError as e:
 			if e.response['Error']['Code'] == "404":
 				return None
 			raise e
 
-	def updatePage(self,page,user,contentType,content):
+	def updatePage(self,page,user,contentType,content,html=None):
 		data={}
 		data["user"]=user
 		data["contentType"]=contentType
 		data["content"]=content
+		if html!=None:
+			data["rendered"]=html
 		text=json.dumps(data,indent=2)
 		self.client.put_object(Bucket=self.bucket,Body=text,ContentType="application/json",Key=self.getBaseKey(page))
 		return True
@@ -54,10 +58,13 @@ class DBMemory:
 		self.log = logging.getLogger("DB.Memory")
 		self.db = {}
 
-	def updatePage(self,page,user,contentType,content):
+	def updatePage(self,page,user,contentType,content,html=None):
 		if not page in self.db:
 			self.db[page]=[]
-		self.db[page].insert(0,{'user':user,'contentType':contentType,'content':content})
+		obj={'user':user,'contentType':contentType,'content':content}
+		if html != None:
+			obj["rendered"]=html
+		self.db[page].insert(0,obj)
 		return True
 
 	def getPage(self,page):

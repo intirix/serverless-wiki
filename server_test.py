@@ -3,6 +3,7 @@
 import unittest
 import server
 import logging
+import db
 
 class TestServer(unittest.TestCase):
 
@@ -24,6 +25,24 @@ class TestServer(unittest.TestCase):
 		obj = server.Server(None)
 		html = obj._render("mediawiki","= Welcome")
 		self.assertTrue("= Welcome" in html)
+
+	def testNonRenderedPage(self):
+		mydb = db.DBMemory()
+		obj = server.Server(mydb)
+		ctx = server.Context("<unittest>")
+
+		mydb.updatePage("testPage","<unittest>","mediawiki","= Test =",None)
+		self.assertEquals("\n<h1> Test </h1>\n",obj.getPage(ctx,"testPage")["html"])
+
+	def testRenderedPage(self):
+		mydb = db.DBMemory()
+		obj = server.Server(mydb)
+		ctx = server.Context("<unittest>")
+
+		rendered = "<h1>Rendered</h1>"
+
+		mydb.updatePage("testPage","<unittest>","mediawiki","= Test =",rendered)
+		self.assertEquals(rendered,obj.getPage(ctx,"testPage")["html"])
 
 
 if __name__ == '__main__':
