@@ -8,6 +8,48 @@
       }
     },
 
+    "WebsiteBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl" : "PublicRead",
+        "WebsiteConfiguration": {
+          "IndexDocument": "index.html"
+        }
+      }
+    },
+
+
+    "WebsiteBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Id": "MyPolicy",
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "PublicReadForGetBucketObjects",
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": "s3:GetObject",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "WebsiteBucket"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "Bucket": {"Ref": "WebsiteBucket"}
+      }
+    },
+
 
 
 
@@ -77,7 +119,9 @@
               ],
               "Resource": [
                 {"Fn::GetAtt" : [ "PageBucket", "Arn" ]},
-                {"Fn::Join" : ["",[{"Fn::GetAtt" : [ "PageBucket", "Arn" ]},"/*"]]}
+                {"Fn::Join" : ["",[{"Fn::GetAtt" : [ "PageBucket", "Arn" ]},"/*"]]},
+                {"Fn::GetAtt" : [ "WebsiteBucket", "Arn" ]},
+                {"Fn::Join" : ["",[{"Fn::GetAtt" : [ "WebsiteBucket", "Arn" ]},"/*"]]}
               ]
             }
           ]
@@ -103,7 +147,8 @@
         "Handler" : "lambda_functions.single_func",
         "Environment": {
           "Variables": {
-            "PAGE_BUCKET": {"Ref":"PageBucket"}
+            "PAGE_BUCKET": {"Ref":"PageBucket"},
+            "WEBSITE_BUCKET": {"Ref":"WebsiteBucket"}
           }
         },
         "MemorySize" : 128,
@@ -367,5 +412,16 @@
 
 
 
+  },
+  "Outputs": {
+    "WebsiteURL": {
+      "Value": {
+        "Fn::GetAtt": [
+          "WebsiteBucket",
+          "WebsiteURL"
+        ]
+      },
+      "Description": "URL for website hosted on S3"
+    }
   }
 }
