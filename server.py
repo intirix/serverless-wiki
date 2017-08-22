@@ -33,6 +33,11 @@ class Server:
 		if not self.db.doesPageExist("Index"):
 			self.db.updatePage("Index","<system>","mediawiki","= Welcome =")
 
+	def getUserFromContext(self,ctx):
+		if ctx == None:
+			return "<unknown>"
+		return ctx.user
+
 	def createContext(self,username):
 		ctx = Context(username)
 		return ctx
@@ -67,9 +72,9 @@ class Server:
 
 		html = None
 		if self.prerender:
-			html = self.render(contentType,content)
+			html = self._render(contentType,content)
 
-		self.db.updatePage(self,page,ctx.user,contentType,content,html)
+		self.db.updatePage(page,self.getUserFromContext(ctx),contentType,content,html)
 		return self.getPage(ctx,page)
 
 	def sanitize(self,html):

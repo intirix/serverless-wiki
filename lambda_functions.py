@@ -112,7 +112,7 @@ def update_page(event, context):
 
         try:
                 page = event["pathParameters"]["page"]
-		body = get_body(event)
+		body = json.loads(get_body(event))
 
 		resp = obj.server.updatePage(obj.ctx,page,body)
 
