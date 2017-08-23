@@ -1,0 +1,8 @@
+
+.menuClosed .navItems {
+	display: none;
+}
+
+.menuClosed .menuButtonOpen, .menuOpen .menuButtonClosed {
+	display: none;
+}

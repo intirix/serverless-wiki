@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    <link rel="stylesheet" type="text/css" href="css/styles.css"/>
+    <link rel="stylesheet" type="text/css" href="css/mobile.css" media="handheld,only screen and (max-width:480px)"/>
+    <link rel="stylesheet" type="text/css" href="css/screen.css" media="handheld,only screen and (min-width:480px)"/>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
     <script type="text/javascript" src="js/wikiapi/lib/axios/dist/axios.standalone.js"></script>
@@ -17,16 +21,26 @@
   </head>
   <body>
 
-    <div ng-app="myApp" class="">
+    <div ng-app="myApp" class="page ng-scope ng-binding ng-class:{loggedIn: authuser!='',anon: authuser==''};">
 
-      <div class="nav">
-        <a href="#/!">Home</a>
+      <div id="nav" class="nav ng-class:{menuClosed: menuState!='open',menuOpen: menuState=='open'};">
+        <div class="menuButtonOpen">
+         <a href="#" ng-click="menuState='closed'">Close Menu</a>
+        </div>
+        <div class="menuButtonClosed">
+         <a href="#" ng-click="menuState='open'">Open Menu</a>
+        </div>
+        <div class="navItems">
+          <a href="#/!"><div>Home</div></a>
+          <a href="#/!" class="userItem"><div>Login</div></a>
+          <a href="#/!" class="anonOnly"><div>Logout</div></a>
+        </div>
       </div>
 
       <div class="header">
       </div>
 
-      <div class="ng-view ng-scope ng-binding"></div>
+      <div class="ng-view view"></div>
 
       <div class="footer">
       </div>

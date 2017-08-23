@@ -1,0 +1,13 @@
+.nav {
+	display: inline;
+	float: left;
+	width: 10em;
+}
+
+.view {
+	display: inline;
+}
+
+.menuButtonOpen, .menuButtonClosed {
+	display: none;
+}

@@ -1,0 +1,3 @@
+.loggedIn .anonOnly, .anon .userItem {
+	display: none;
+}
