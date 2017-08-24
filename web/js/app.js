@@ -12,11 +12,16 @@ app.config(function($routeProvider) {
         controller: "ViewPageCtrl",
         controllerAs: "app"
     })
-    .when("/green", {
-        templateUrl : "green.htm"
+    .when("/login", {
+        templateUrl : "login.html",
+        controller: "LoginCtrl",
+        controllerAs: "app"
     })
-    .when("/blue", {
-        templateUrl : "blue.htm"
+    .when("/signup", {
+        templateUrl : "signup.html"
+    })
+    .when("/logout", {
+        templateUrl : "logout.html"
     });
 })
 .controller('ViewPageCtrl', function($scope,$routeParams,$sce) {
@@ -41,4 +46,10 @@ app.config(function($routeProvider) {
     console.log("Failed");
     console.log(result);
   });
+})
+.controller('LoginCtrl', function($scope,$rootScope,$location) {
+  $scope.onLogin = function() {
+    $rootScope.authuser=$scope.formuser;
+    $location.path('/');
+  };
 });

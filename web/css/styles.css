@@ -1,3 +1,7 @@
 .loggedIn .anonOnly, .anon .userItem {
 	display: none;
 }
+
+.header {
+	text-align: right;
+}
