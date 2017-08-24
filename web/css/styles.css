@@ -5,3 +5,8 @@
 .header {
 	text-align: right;
 }
+
+.editBody textarea {
+	width: 90%;
+	height: 90%;
+}
