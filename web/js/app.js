@@ -12,11 +12,21 @@ app.config(function($routeProvider) {
         controller: "ViewPageCtrl",
         controllerAs: "app"
     })
-    .when("/green", {
-        templateUrl : "green.htm"
+    .when("/edit/:page", {
+        templateUrl : "editPage.html",
+        controller: "EditPageCtrl",
+        controllerAs: "app"
     })
-    .when("/blue", {
-        templateUrl : "blue.htm"
+    .when("/login", {
+        templateUrl : "login.html",
+        controller: "LoginCtrl",
+        controllerAs: "app"
+    })
+    .when("/signup", {
+        templateUrl : "signup.html"
+    })
+    .when("/logout", {
+        templateUrl : "logout.html"
     });
 })
 .controller('ViewPageCtrl', function($scope,$routeParams,$sce) {
@@ -26,6 +36,7 @@ app.config(function($routeProvider) {
     self.page="Index"
   }
   console.log("page="+self.page)
+  $scope.page = self.page;
   $scope.content = "Loading..."
   params={'page':self.page}
   apigClient.v1PagesPageGet(params,null,{}).then(function(result){
@@ -41,4 +52,31 @@ app.config(function($routeProvider) {
     console.log("Failed");
     console.log(result);
   });
+})
+.controller('EditPageCtrl', function($scope,$routeParams,$sce) {
+  var self = this;
+  self.page = $routeParams.page;
+  if (self.page===undefined) {
+    self.page="Index"
+  }
+  $scope.contentTypes = [ "mediawiki" ];
+  $scope.page = self.page;
+  console.log("page="+self.page)
+  params={'page':self.page}
+  apigClient.v1PagesPageGet(params,null,{}).then(function(result){
+    $scope.content = result.data.html
+    console.log(result.data);
+    $scope.$apply(function () {
+      $scope.content = $sce.trustAsHtml(result.data.content);
+    });
+  }).catch( function(result){
+    console.log("Failed");
+    console.log(result);
+  });
+})
+.controller('LoginCtrl', function($scope,$rootScope,$location) {
+  $scope.onLogin = function() {
+    $rootScope.authuser=$scope.formuser;
+    $location.path('/');
+  };
 });

@@ -1,0 +1,17 @@
+<form ng-submit="onLogin()" novalidate>
+  <table>
+    <tr>
+      <td>Username:</td>
+      <td><input type="text" size="20" ng-model="formuser"/></td>
+    </tr>
+    <tr>
+      <td>Password:</td>
+      <td><input type="password" size="20" ng-model="formpass"/></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <input type="button" value="Login" ng-click="onLogin();"/>
+      </td>
+    </tr>
+  </table>
+</form>

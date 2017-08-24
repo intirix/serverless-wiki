@@ -21,7 +21,7 @@
   </head>
   <body>
 
-    <div ng-app="myApp" class="page ng-scope ng-binding ng-class:{loggedIn: authuser!='',anon: authuser==''};">
+    <div ng-app="myApp" class="page ng-scope ng-binding" ng-class="(authuser==''||authuser==undefined)?['anon']:['loggedIn']">
 
       <div id="nav" class="nav ng-class:{menuClosed: menuState!='open',menuOpen: menuState=='open'};">
         <div class="menuButtonOpen">
@@ -32,12 +32,16 @@
         </div>
         <div class="navItems">
           <a href="#/!"><div>Home</div></a>
-          <a href="#/!" class="userItem"><div>Login</div></a>
-          <a href="#/!" class="anonOnly"><div>Logout</div></a>
+          <a href="#!login" class="anonOnly"><div>Login</div></a>
+          <a href="#!logout" class="userItem"><div>Logout</div></a>
+          <a href="#!signup" class="anonOnly"><div>Signup</div></a>
         </div>
       </div>
 
       <div class="header">
+        <div class="userItem">
+          <a href="#!profile/{{authuser}}">{{authuser}}</a>
+        </div>
       </div>
 
       <div class="ng-view view"></div>
