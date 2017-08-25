@@ -5,3 +5,4 @@
 *.pyc
 *.swo
 .coverage
+.DS_Store
