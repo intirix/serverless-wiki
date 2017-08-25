@@ -137,10 +137,14 @@ class Server:
 			f.close()
 
 
-		print("Downloading sdk")
 		client2 = boto3.client('apigateway')
+		print("Deploying latest API")
+		resp = client2.create_deployment(restApiId=restApi,stageName=stage)
+		print(resp)
+
+
+		print("Downloading sdk")
 		resp = client2.get_sdk(restApiId=restApi,stageName=stage,sdkType='javascript')
-		print("Got "+resp["contentType"])
 
 		buf = StringIO.StringIO()
 		shutil.copyfileobj(resp["body"],buf)
@@ -153,6 +157,7 @@ class Server:
 			zbuf = StringIO.StringIO()
 			shutil.copyfileobj(zif,zbuf)
 			zif.close()
+			print("Uploading s3://"+bucket+"/"+zfile)
 			client.put_object(Bucket=bucket,Key=zfile,Body=zbuf.getvalue())
 
 
