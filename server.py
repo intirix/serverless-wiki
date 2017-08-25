@@ -6,6 +6,8 @@ import mediawiki_parser.html
 import bleach
 import cgi
 import time
+import boto3
+import glob
 
 class Context:
 
@@ -106,4 +108,31 @@ class Server:
 		preprocessed_text = preprocessor.parse(markup+"\n")
 		output = parser.parse(preprocessed_text.leaves())
 		return output.leaf()
+
+	def copyWebsiteToWebpageBucket(self,bucket):
+		client = boto3.client('s3')
+		for filename in glob.glob('web/*.html'):
+			print(filename)
+			f = open(filename)
+			key = self._getWebpageKey(filename)
+			print("Uploading s3://"+bucket+'/'+key)
+			client.put_object(Bucket=bucket,ContentType="text/html",Key=key,Body=f)
+			f.close()
+		for filename in glob.glob('web/js/*.js'):
+			print(filename)
+			f = open(filename)
+			key = self._getWebpageKey(filename)
+			print("Uploading s3://"+bucket+'/'+key)
+			client.put_object(Bucket=bucket,ContentType="application/javascript",Key=key,Body=f)
+			f.close()
+		for filename in glob.glob('web/css/*.css'):
+			print(filename)
+			f = open(filename)
+			key = self._getWebpageKey(filename)
+			print("Uploading s3://"+bucket+'/'+key)
+			client.put_object(Bucket=bucket,ContentType="text/css",Key=key,Body=f)
+			f.close()
+
+	def _getWebpageKey(self,f):
+		return f.replace("web/","")
 

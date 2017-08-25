@@ -76,6 +76,11 @@ def addCorsHeaders(resp):
 def single_func(event, context):
         print(json.dumps(event,indent=2))
 
+	if event==None or not "body" in event:
+		obj = LambdaCommon()
+		obj.server.copyWebsiteToWebpageBucket(os.environ["WEBSITE_BUCKET"])
+		return
+
         if matches(event,"GET","/v1/pages/{page}"):
                 return get_page(event, context)
         if matches(event,"POST","/v1/pages/{page}"):
