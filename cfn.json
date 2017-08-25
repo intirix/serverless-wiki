@@ -97,7 +97,8 @@
 
     "FunctionPolicy": {
       "DependsOn": [
-        "Role"
+        "Role",
+        "RestApi"
       ],
       "Type": "AWS::IAM::ManagedPolicy",
       "Properties": {
@@ -123,6 +124,16 @@
                 {"Fn::GetAtt" : [ "WebsiteBucket", "Arn" ]},
                 {"Fn::Join" : ["",[{"Fn::GetAtt" : [ "WebsiteBucket", "Arn" ]},"/*"]]}
               ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "apigateway:GET"
+              ],
+              "Resource": [
+                {"Fn::Join": ["",["arn:aws:apigateway:us-east-1::/restapis/",
+                  {"Ref":"RestApi"},"/stages/prod/sdks/javascript"]]}
+              ]
             }
           ]
         }
@@ -134,7 +145,8 @@
     "Function": {
       "DependsOn": [
         "Role",
-        "FunctionPolicy"
+        "FunctionPolicy",
+        "RestApi"
       ],
       "Type" : "AWS::Lambda::Function",
       "Properties" : {
@@ -147,6 +159,8 @@
         "Handler" : "lambda_functions.single_func",
         "Environment": {
           "Variables": {
+            "REST_API": {"Ref":"RestApi"},
+            "REST_STAGE": "prod",
             "PAGE_BUCKET": {"Ref":"PageBucket"},
             "WEBSITE_BUCKET": {"Ref":"WebsiteBucket"}
           }

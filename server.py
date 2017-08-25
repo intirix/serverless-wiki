@@ -8,6 +8,9 @@ import cgi
 import time
 import boto3
 import glob
+import zipfile
+import shutil
+import StringIO
 
 class Context:
 
@@ -109,7 +112,7 @@ class Server:
 		output = parser.parse(preprocessed_text.leaves())
 		return output.leaf()
 
-	def copyWebsiteToWebpageBucket(self,bucket):
+	def copyWebsiteToWebpageBucket(self,bucket,restApi,stage):
 		client = boto3.client('s3')
 		for filename in glob.glob('web/*.html'):
 			print(filename)
@@ -132,6 +135,26 @@ class Server:
 			print("Uploading s3://"+bucket+'/'+key)
 			client.put_object(Bucket=bucket,ContentType="text/css",Key=key,Body=f)
 			f.close()
+
+
+		print("Downloading sdk")
+		client2 = boto3.client('apigateway')
+		resp = client2.get_sdk(restApiId=restApi,stageName=stage,sdkType='javascript')
+		print("Got "+resp["contentType"])
+
+		buf = StringIO.StringIO()
+		shutil.copyfileobj(resp["body"],buf)
+
+		z = zipfile.ZipFile(buf)
+		
+		for zfile in z.namelist():
+			print(zfile)
+			zif = z.open(zfile)
+			zbuf = StringIO.StringIO()
+			shutil.copyfileobj(zif,zbuf)
+			zif.close()
+			client.put_object(Bucket=bucket,Key=zfile,Body=zbuf.getvalue())
+
 
 	def _getWebpageKey(self,f):
 		return f.replace("web/","")

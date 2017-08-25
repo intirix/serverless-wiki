@@ -78,7 +78,7 @@ def single_func(event, context):
 
 	if event==None or not "body" in event:
 		obj = LambdaCommon()
-		obj.server.copyWebsiteToWebpageBucket(os.environ["WEBSITE_BUCKET"])
+		obj.server.copyWebsiteToWebpageBucket(os.environ["WEBSITE_BUCKET"],os.environ["REST_API"],os.environ["REST_STAGE"])
 		return
 
         if matches(event,"GET","/v1/pages/{page}"):
