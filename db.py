@@ -36,7 +36,7 @@ class DBS3:
 			self.client.head_object(Bucket=self.bucket,Key=self.getBaseKey(page))
 			return True
 		except botocore.exceptions.ClientError as e:
-			if e.response['Error']['Code'] == "404":
+			if e.response['Error']['Code'] == "NoSuchKey":
 				return False
 			raise e
 
@@ -45,7 +45,7 @@ class DBS3:
 			obj = self.client.get_object(Bucket=self.bucket,Key=self.getBaseKey(page))
 			return self._pageFromResponse(obj)
 		except botocore.exceptions.ClientError as e:
-			if e.response['Error']['Code'] == "404":
+			if e.response['Error']['Code'] == "NoSuchKey":
 				raise custom_exceptions.NotFound()
 			raise e
 
