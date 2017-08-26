@@ -11,6 +11,7 @@ import glob
 import zipfile
 import shutil
 import StringIO
+import custom_exceptions
 
 class Context:
 
@@ -150,7 +151,7 @@ class Server:
 		shutil.copyfileobj(resp["body"],buf)
 
 		z = zipfile.ZipFile(buf)
-		
+
 		for zfile in z.namelist():
 			print(zfile)
 			zif = z.open(zfile)
@@ -163,4 +164,3 @@ class Server:
 
 	def _getWebpageKey(self,f):
 		return f.replace("web/","")
-

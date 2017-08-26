@@ -4,6 +4,7 @@ import unittest
 import server
 import logging
 import db
+import custom_exceptions
 
 class TestServer(unittest.TestCase):
 
@@ -44,9 +45,15 @@ class TestServer(unittest.TestCase):
 		mydb.updatePage("testPage","<unittest>","mediawiki","= Test =",rendered)
 		self.assertEquals(rendered,obj.getPage(ctx,"testPage")["html"])
 
+	def testNoFound(self):
+		mydb = db.DBMemory()
+		obj = server.Server(mydb)
+		ctx = server.Context("<unittest>")
+		self.assertEquals(False, mydb.doesPageExist("doesNotExist"))
+		with self.assertRaises(custom_exceptions.NotFound):
+			obj.getPage(ctx, "doesNotExist")
 
 if __name__ == '__main__':
 	#FORMAT = "%(asctime)-15s %(message)s"
 	#logging.basicConfig(format=FORMAT)
 	unittest.main()
-

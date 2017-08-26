@@ -6,6 +6,7 @@ import server
 import json
 import base64
 import os
+import custom_exceptions
 
 class LambdaCommon:
 
@@ -76,11 +77,6 @@ def addCorsHeaders(resp):
 def single_func(event, context):
         print(json.dumps(event,indent=2))
 
-	if event==None or not "body" in event:
-		obj = LambdaCommon()
-		obj.server.copyWebsiteToWebpageBucket(os.environ["WEBSITE_BUCKET"],os.environ["REST_API"],os.environ["REST_STAGE"])
-		return
-
         if matches(event,"GET","/v1/pages/{page}"):
                 return get_page(event, context)
         if matches(event,"POST","/v1/pages/{page}"):
@@ -105,7 +101,10 @@ def get_page(event, context):
         except server.AccessDeniedException, e:
                 obj.log.exception("Access Denied")
                 return addCorsHeaders({"statusCode":403})
-        except:
+	except custom_exceptions.NotFound, e:
+		obj.log.exception("Not Found")
+		return addCorsHeaders({"statusCode":404})
+	except:
                 obj.log.exception("Error")
                 return addCorsHeaders({"statusCode":500})
         return addCorsHeaders({"statusCode":404})
@@ -134,4 +133,3 @@ def update_page(event, context):
 
 FORMAT = "%(asctime)-15s %(message)s"
 logging.basicConfig(format=FORMAT)
-

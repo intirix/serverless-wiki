@@ -3,6 +3,7 @@
 import unittest
 import db
 import logging
+import custom_exceptions
 
 class TestDBMemory(unittest.TestCase):
 
@@ -26,9 +27,13 @@ class TestDBMemory(unittest.TestCase):
 		self.assertEquals("my body",obj.getPageVersion('index',1)['content'])
 		self.assertEquals("new body",obj.getPageVersion('index',2)['content'])
 
+	def testNotFound(self):
+		obj = db.DBMemory()
+		self.assertEquals(False, obj.doesPageExist('doesNotExist'))
+		with self.assertRaises(custom_exceptions.NotFound):
+			obj.getPage('doesNotExist')
 
 if __name__ == '__main__':
 	#FORMAT = "%(asctime)-15s %(message)s"
 	#logging.basicConfig(format=FORMAT)
 	unittest.main()
-

@@ -5,6 +5,7 @@ import botocore
 import logging
 import json
 import time
+import custom_exceptions
 
 class DBS3:
 
@@ -45,7 +46,7 @@ class DBS3:
 			return self._pageFromResponse(obj)
 		except botocore.exceptions.ClientError as e:
 			if e.response['Error']['Code'] == "404":
-				return None
+				raise custom_exceptions.NotFound()
 			raise e
 
 	def updatePage(self,page,user,contentType,content,html=None):
@@ -65,20 +66,20 @@ class DBS3:
 		self.client.put_object(Bucket=self.bucket,Body=data,ContentType="application/json",Key=self.getTimestampKey(page,timestamp))
 
 	def listPageVersions(self, page):
-		pageKey = getBaseKey(page)
+		pageKey = self.getBaseKey(page)
 		#Can only retrieve up to 1000 versions of a page
 		page_versions = self.client.list_objects_v2(Prefix=pageKey)
 		page_versions.reverse()
 		return page_versions
 
 	def getPageVersion(self, page, timestamp):
-		pageKey = getTimestampKey(page,timestamp)
+		pageKey = self.getTimestampKey(page,timestamp)
 		try:
 			obj = self.client.get_object(Bucket=self.bucket,Key=pageKey)
 			return self._pageFromResponse(obj)
 		except botocore.exceptions.ClientError as e:
 			if e.response['Error']['Code'] == "404":
-				return None
+				raise custom_exceptions.NotFound()
 			raise e
 
 class DBMemory:
@@ -99,14 +100,14 @@ class DBMemory:
 	def getPage(self,page):
 		if page in self.db:
 			return self.db[page][0]
-		return None
+		raise custom_exceptions.NotFound()
 
 	def doesPageExist(self,page):
 		return page in self.db
 
 	def listPageVersions(self,page):
 		if not page in self.db:
-			return []
+			raise custom_exceptions.NotFound()
 
 		ret = []
 		ret.extend(self.db[page])
