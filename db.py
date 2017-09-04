@@ -6,13 +6,14 @@ import logging
 import json
 import time
 import custom_exceptions
+import search
 
 class DBS3:
 
 	def __init__(self,bucket):
 		self.log = logging.getLogger("DB.S3")
 		self.bucket = bucket
-
+		self.search = search.SearchIndex(bucket)
 		self.client = boto3.client('s3')
 
 	def getBaseKey(self,page):
@@ -57,9 +58,16 @@ class DBS3:
 		if html!=None:
 			data["rendered"]=html
 		text=json.dumps(data,indent=2)
+		self.search.init()
+		self.search.indexPage(self.getBaseKey(page), page, content)
+		self.search.close()
 		self.client.put_object(Bucket=self.bucket,Body=text,ContentType="application/json",Key=self.getBaseKey(page))
 		self._writeVersionedFile(page,text)
 		return True
+
+	def searchPage(self, query):
+		self.search.init()
+		return self.search.searchPage(query)
 
 	def _writeVersionedFile(self,page,data):
 		timestamp = int(time.time())

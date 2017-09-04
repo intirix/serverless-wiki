@@ -32,7 +32,25 @@ paths:
             $ref: "#/definitions/Page"
         404:
           description: "Page not found"
-
+paths:
+  /search/{query}:
+    get:
+      summary: "Search for a page"
+      description: ""
+      operationId: "search"
+      produces:
+      - "application/json"
+      parameters:
+      - in: path
+        name: query
+        required: true
+        schema:
+          type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/SearchResults"
 
 definitions:
   Page:
@@ -53,5 +71,15 @@ definitions:
         enum:
         - "mediawiki"
         - "plaintext"
-
-
+  SearchResults:
+    type: "object"
+    properties:
+      results:
+        type: "array"
+        description: "An array of the search matches"
+        items:
+          type: "object"
+          properties:
+            title:
+              type: "string"
+              description: "The title of the page"

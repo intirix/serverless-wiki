@@ -83,6 +83,9 @@ class Server:
 		self.db.updatePage(page,self.getUserFromContext(ctx),contentType,content,html)
 		return self.getPage(ctx,page)
 
+	def search(self,ctx,query):
+		return self.db.searchPage(query)
+
 	def sanitize(self,html):
 		return bleach.clean(html,tags=self.allowedTags,attributes=self.attrs)
 

@@ -421,9 +421,106 @@
         "ResourceId": {"Ref":"RestResourceV1PagesPage"},
         "RestApiId": {"Ref":"RestApi"}
       }
-    }
+    },
 
-
+    "RestResourceV1Search": {
+      "DependsOn": [
+        "RestResourceV1",
+        "Function"
+      ],
+      "Type" : "AWS::ApiGateway::Resource",
+      "Properties" : {
+        "ParentId" : {"Ref":"RestResourceV1"},
+        "PathPart" : "search",
+        "RestApiId" : {"Ref":"RestApi"}
+      }
+    },
+		"RestResourceV1SearchQuery": {
+			"DependsOn": [
+				"RestResourceV1Search",
+				"Function"
+			],
+			"Type" : "AWS::ApiGateway::Resource",
+			"Properties" : {
+				"ParentId" : {"Ref":"RestResourceV1Search"},
+				"PathPart" : "{query}",
+				"RestApiId" : {"Ref":"RestApi"}
+			}
+		},
+		"RestMethodGETV1SearchQuery": {
+      "DependsOn": [
+        "RestResourceV1SearchQuery",
+        "LambdaPermission"
+      ],
+      "Type" : "AWS::ApiGateway::Method",
+      "Properties" : {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "RequestParameters": {
+          "method.request.path.query": true
+        },
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {"Fn::Join": [ "", [
+              "arn:aws:apigateway:",
+              {"Ref":"AWS::Region"},
+              ":lambda:path/2015-03-31/functions/",
+              {"Fn::GetAtt" : [ "Function", "Arn" ]},
+              "/invocations"
+            ]]}
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200"
+          }
+        ],
+        "ResourceId": {"Ref":"RestResourceV1SearchQuery"},
+        "RestApiId": {"Ref":"RestApi"}
+      }
+    },
+		"RestMethodOPTIONSV1SearchQuery": {
+			"DependsOn": [
+				"RestResourceV1SearchQuery"
+			],
+			"Type" : "AWS::ApiGateway::Method",
+			"Properties" : {
+				"AuthorizationType": "NONE",
+				"HttpMethod": "OPTIONS",
+				"Integration": {
+					"Type": "MOCK",
+					"IntegrationResponses": [
+						{
+							"ResponseParameters": {
+								"method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+								"method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,OPTIONS,DELETE'",
+								"method.response.header.Access-Control-Allow-Origin": "'*'"
+							},
+							"ResponseTemplates": {
+								"application/json": ""
+							},
+							"StatusCode": "200"
+						}
+					],
+					"PassthroughBehavior": "NEVER",
+					"RequestTemplates": {
+						"application/json": "{\"statusCode\": 200}"
+					}
+				},
+				"MethodResponses": [
+					{
+						"ResponseParameters": {
+							"method.response.header.Access-Control-Allow-Headers": true,
+							"method.response.header.Access-Control-Allow-Methods": true,
+							"method.response.header.Access-Control-Allow-Origin": true
+						},
+						"StatusCode": "200"
+					}
+				],
+				"ResourceId": {"Ref":"RestResourceV1SearchQuery"},
+				"RestApiId": {"Ref":"RestApi"}
+			}
+		}
 
 
   },
