@@ -8,6 +8,7 @@ import time
 import custom_exceptions
 import os
 import shutil
+import tempfile
 
 class DBS3:
 
@@ -108,6 +109,16 @@ class DBMemory:
 		self.log = logging.getLogger("DB.Memory")
 		self.db = {}
 
+	def __enter__(self):
+		self.tmpdir = tempfile.mkdtemp(prefix="wiki_test")
+		self.indexDirectory = self.tmpdir
+
+	def __exit__(self, exc_type, exc_value, traceback):
+		shutil.rmtree(self.tmpdir)
+
+	def getBaseKey(self,page):
+		return page
+
 	def updatePage(self,page,user,contentType,content,html=None):
 		if not page in self.db:
 			self.db[page]=[]
@@ -139,3 +150,9 @@ class DBMemory:
 		if page in self.db and version<=len(self.db[page]):
 			return self.db[page][len(self.db[page])-version]
 		return None
+
+	def setupIndexFiles(self):
+		return
+
+	def writeIndex(self):
+		return

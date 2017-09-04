@@ -23,7 +23,7 @@ class SearchIndex:
 		key = self.db.getBaseKey(page)
 		ix = self._setupIndex()
 		writer = ix.writer()
-		writer.add_document(key=key, title=page, content=content)
+		writer.add_document(key=unicode(key), title=unicode(page), content=unicode(content))
 		writer.commit()
 		self.db.writeIndex()
 
