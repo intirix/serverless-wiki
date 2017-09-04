@@ -15,8 +15,10 @@ class SearchIndex:
 
 	def _setupIndex(self):
 		if self.db.setupIndexFiles():
+			self.log.info("Reading existing index")
 			return index.open_dir(self.db.indexDirectory)
 		else:
+			self.log.info("Creating new index")
 			return index.create_in(self.db.indexDirectory, PageSchema)
 
 	def indexPage(self, page, content):
@@ -31,14 +33,15 @@ class SearchIndex:
 		key = self.db.getBaseKey(page)
 		ix = self._setupIndex()
 		writer = ix.writer()
-		writer.update_document(key=key, title=page, content=content)
+		writer.update_document(key=unicode(key), title=unicode(page), content=unicode(content))
 		writer.commit()
 		self.db.writeIndex()
 
 	def searchPage(self, query):
 		ix = self._setupIndex()
 		parser = MultifieldParser(["title", "content"], schema=ix.schema)
-		parsed_query = parser.parse(query)
+		parsed_query = parser.parse(unicode(query))
+		self.log.info("Performing search: "+str(parsed_query))
 		response = []
 		with ix.searcher() as s:
 			results = s.search(parsed_query)

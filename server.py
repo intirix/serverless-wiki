@@ -81,9 +81,15 @@ class Server:
 		if self.prerender:
 			html = self._render(contentType,content)
 
+		exists = self.db.doesPageExist(page)
 		self.db.updatePage(page,self.getUserFromContext(ctx),contentType,content,html)
 		searchIdx = search.SearchIndex(self.db)
-		searchIdx.indexPage(page, content)
+		if exists:
+			self.log.info("Updating search index for "+page)
+			searchIdx.updatePage(page, content)
+		else:
+			self.log.info("Adding search index for "+page)
+			searchIdx.indexPage(page, content)
 		return self.getPage(ctx,page)
 
 	def search(self,ctx,query):

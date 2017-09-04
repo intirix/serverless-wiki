@@ -18,11 +18,13 @@ class TestSearch(unittest.TestCase):
 
 			data={}
 			data["contentType"]="mediawiki"
-			data["content"]="= Test ="
+			data["content"]="= Test =\nThis is a test page to verify that search is working\n"
 
 			obj.updatePage(ctx,"testPage",data)
 
 			ret = obj.search(ctx,"test")
+			print(ret)
+			ret = obj.search(ctx,"verify")
 			print(ret)
 
 

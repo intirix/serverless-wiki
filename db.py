@@ -114,6 +114,7 @@ class DBMemory:
 		self.indexDirectory = self.tmpdir
 
 	def __exit__(self, exc_type, exc_value, traceback):
+		#print("Deleting "+self.tmpdir)
 		shutil.rmtree(self.tmpdir)
 
 	def getBaseKey(self,page):
@@ -121,7 +122,10 @@ class DBMemory:
 
 	def updatePage(self,page,user,contentType,content,html=None):
 		if not page in self.db:
+			self.log.info("Creating new page "+page)
 			self.db[page]=[]
+		else:
+			self.log.info("Updating page "+page)
 		obj={'user':user,'contentType':contentType,'content':content}
 		if html != None:
 			obj["rendered"]=html
@@ -152,7 +156,7 @@ class DBMemory:
 		return None
 
 	def setupIndexFiles(self):
-		return
+		return os.path.exists(self.tmpdir+"/MAIN_WRITELOCK")
 
 	def writeIndex(self):
 		return
