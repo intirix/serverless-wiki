@@ -6,7 +6,6 @@ import server
 import json
 import base64
 import os
-import custom_exceptions
 
 class LambdaCommon:
 
@@ -83,7 +82,8 @@ def single_func(event, context):
                 return update_page(event, context)
         if matches(event,"PUT","/v1/pages/{page}"):
                 return update_page(event, context)
-
+	if matches(event, "GET", "/v1/search/{query}"):
+		return search(event, context)
 	return {"statusCode":404}
 
 
@@ -101,10 +101,7 @@ def get_page(event, context):
         except server.AccessDeniedException, e:
                 obj.log.exception("Access Denied")
                 return addCorsHeaders({"statusCode":403})
-	except custom_exceptions.NotFound, e:
-		obj.log.exception("Not Found")
-		return addCorsHeaders({"statusCode":404})
-	except:
+        except:
                 obj.log.exception("Error")
                 return addCorsHeaders({"statusCode":500})
         return addCorsHeaders({"statusCode":404})
@@ -129,7 +126,22 @@ def update_page(event, context):
                 return addCorsHeaders({"statusCode":500})
         return addCorsHeaders({"statusCode":404})
 
+def search(event, context):
+	obj =  LambdaCommon()
+	if obj.getResponse() != None:
+		return obj.getResponse
 
+	try:
+		query = event["pathParameters"]["query"]
+		resp = obj.server.search(obj.ctx, query)
+		return addCorsHeaders({"statusCode":200,"body":json.dumps(resp,indent=2)})
+	except server.AccessDeniedException, e:
+	       	obj.log.exception("Access Denied")
+	       	return addCorsHeaders({"statusCode":403})
+	except:
+	      	obj.log.exception("Error")
+	      	return addCorsHeaders({"statusCode":500})
+	return addCorsHeaders({"statusCode":404})
 
 FORMAT = "%(asctime)-15s %(message)s"
 logging.basicConfig(format=FORMAT)

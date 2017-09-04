@@ -12,6 +12,7 @@ import zipfile
 import shutil
 import StringIO
 import custom_exceptions
+import search
 
 class Context:
 
@@ -81,7 +82,13 @@ class Server:
 			html = self._render(contentType,content)
 
 		self.db.updatePage(page,self.getUserFromContext(ctx),contentType,content,html)
+		searchIdx = search.SearchIndex(self.db)
+		searchIdx.indexPage(page, content)
 		return self.getPage(ctx,page)
+
+	def search(self,ctx,query):
+		searchIdx = search.SearchIndex(self.db)
+		return searchIdx.searchPage(query)
 
 	def sanitize(self,html):
 		return bleach.clean(html,tags=self.allowedTags,attributes=self.attrs)

@@ -6,14 +6,16 @@ import logging
 import json
 import time
 import custom_exceptions
+import os
+import shutil
 
 class DBS3:
 
 	def __init__(self,bucket):
 		self.log = logging.getLogger("DB.S3")
 		self.bucket = bucket
-
 		self.client = boto3.client('s3')
+		self.indexDirectory = "/tmp/pageIndex"
 
 	def getBaseKey(self,page):
 		return page+".json"
@@ -81,6 +83,24 @@ class DBS3:
 			if e.response['Error']['Code'] == "404":
 				raise custom_exceptions.NotFound()
 			raise e
+
+	def setupIndexFiles(self):
+		if os.path.exists(self.indexDirectory):
+			shutil.rmtree(self.indexDirectory)
+		os.makedirs(self.indexDirectory)
+		index_files = self.client.list_objects_v2(Bucket=self.bucket, Prefix="pageIndex/")
+		if 'Contents' not in index_files:
+			return False
+		else:
+			for object in index_files['Contents']:
+				key = object['Key']
+				self.client.download_file(Bucket=self.bucket, Key=key,Filename='/tmp/' + key )
+			return True
+
+	def writeIndex(self):
+		for root,dirs,files in os.walk(self.indexDirectory):
+			for file in files:
+				self.client.upload_file(os.path.join(root,file),self.bucket, "pageIndex/" + file)
 
 class DBMemory:
 
