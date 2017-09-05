@@ -44,11 +44,14 @@ class SearchIndex:
 		self.log.info("Performing search: "+str(parsed_query))
 		response = []
 		with ix.searcher() as s:
-			results = s.search(parsed_query)
+			results = s.search(parsed_query,terms=True)
 			for r in results:
+				terms = map(lambda x: x[1],r.matched_terms())
+				terms = reduce(lambda x,y: x+[y] if not y in x else x, terms,[])
 				obj = {
 					'key': r['key'],
-					'title': r["title"]
+					'title': r["title"],
+					'terms' : terms
 				}
 				response.append(obj)
 		return response
