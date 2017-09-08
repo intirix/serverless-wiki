@@ -1,3 +1,6 @@
+.nav {
+	float: left;
+}
 
 .menuClosed .navItems {
 	display: none;

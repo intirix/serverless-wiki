@@ -1,12 +1,36 @@
+body {
+	margin: 0;
+}
+
+
+/* Hide secure/public content based on context */
 .loggedIn .anonOnly, .anon .userItem {
 	display: none;
 }
 
 .header {
 	text-align: right;
+	background-color: darkslateblue;
+	color: white;
+}
+
+.header a {
+	color: white;
 }
 
 .editBody textarea {
 	width: 90%;
 	height: 90%;
+}
+
+.nav a {
+	color: white;
+}
+
+.navItems {
+	background-color: mediumslateblue;
+}
+
+.navItems a div {
+	color: white;
 }
