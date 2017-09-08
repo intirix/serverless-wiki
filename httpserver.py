@@ -1,4 +1,5 @@
 import BaseHTTPServer
+import SimpleHTTPServer
 import server
 import db
 import logging
@@ -9,7 +10,8 @@ import custom_exceptions
 PORT = 8080
 PATH_REGEX = r'^\/v1\/pages\/([^\/]*)$'
 
-class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+#class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 	def respond(self, statusCode, message):
 		self.send_response(statusCode)
 		self.end_headers()
@@ -20,8 +22,10 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		if matches:
 			path = matches.group(1)
 		else:
-			self.respond(404, "Not Found")
-			return
+			return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+			#return super(MyHandler,self).do_GET()
+			#self.respond(404, "Not Found")
+			#return
 		try:
 			page = self.server.serverIface.getPage('<httpserver>', path)
 			self.respond(200, page["html"])
