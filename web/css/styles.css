@@ -12,6 +12,7 @@ body {
 	text-align: right;
 	background-color: darkslateblue;
 	color: white;
+	padding-bottom: 1px;
 }
 
 .header a {
@@ -23,18 +24,49 @@ body {
 	height: 90%;
 }
 
+.nav {
+	margin-right: 10px;
+}
+
 .nav a {
 	color: white;
 }
 
 .navItems {
 	background-color: mediumslateblue;
+	padding-top: 3px;
+	padding-bottom: 10px;
 }
 
 .navItems a div {
 	color: white;
+	padding-left: 3px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
+
+.navItems a:hover div {
+	background-color: darkslateblue;
+}
+
+.navItems .logo {
+	text-align: center;
 }
 
 .nodeHidden {
 	display: none;
+}
+
+.loading {
+	text-align: center;
+	padding-top: 20%;
+	padding-bottom: 20%;
+}
+
+.loading img {
+	width: 5%;
+}
+
+.performance {
+	font-size: 0.75em;
 }

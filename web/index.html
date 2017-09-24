@@ -31,6 +31,9 @@
          <a href="#" ng-click="menuState='open'">Open Menu</a>
         </div>
         <div class="navItems">
+          <div class="logo">
+            <img src="images/logo.png"/>
+          </div>
           <a href="#/!"><div>Home</div></a>
           <a href="#!login" class="anonOnly"><div>Login</div></a>
           <a href="#!logout" class="userItem"><div>Logout</div></a>
@@ -41,6 +44,10 @@
       <div class="header">
         <div class="userItem">
           <a href="#!profile/{{authuser}}">{{authuser}}</a>
+        </div>
+        <div class="pageHeader">
+          <input type="text" id="searchBox"/>
+          <input type="button" id="searchButton" value="Search"/>
         </div>
       </div>
 
