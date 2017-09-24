@@ -29,13 +29,14 @@ app.config(function($routeProvider) {
         templateUrl : "logout.html"
     });
 })
-.controller('ViewPageCtrl', function($scope,$routeParams,$sce) {
+.controller('ViewPageCtrl', function($scope,$rootScope,$routeParams,$sce) {
   var self = this;
   self.page = $routeParams.page;
   if (self.page===undefined) {
     self.page="Index"
   }
   console.log("page="+self.page)
+  $rootScope.pageState = 'loading';
   $scope.page = self.page;
   $scope.content = "Loading..."
   params={'page':self.page}
@@ -47,18 +48,22 @@ app.config(function($routeProvider) {
       $scope.time_get = result.data.time_get;
       $scope.time_render = result.data.time_render;
       $scope.time_sanitize = result.data.time_sanitize;
+      $rootScope.pageState = 'loaded';
     });
   }).catch( function(result){
+    $rootScope.pageState = 'error';
     console.log("Failed");
     console.log(result);
   });
 })
-.controller('EditPageCtrl', function($scope,$routeParams,$sce) {
+.controller('EditPageCtrl', function($scope,$rootScope,$routeParams,$sce) {
   var self = this;
   self.page = $routeParams.page;
   if (self.page===undefined) {
     self.page="Index"
   }
+  $rootScope.pageState = 'loading';
+  $scope.content = "Loading..."
   $scope.contentTypes = [ "mediawiki" ];
   $scope.page = self.page;
   console.log("page="+self.page)
@@ -68,8 +73,10 @@ app.config(function($routeProvider) {
     console.log(result.data);
     $scope.$apply(function () {
       $scope.content = $sce.trustAsHtml(result.data.content);
+      $rootScope.pageState = 'loaded';
     });
   }).catch( function(result){
+    $rootScope.pageState = 'error';
     console.log("Failed");
     console.log(result);
   });

@@ -34,3 +34,7 @@ body {
 .navItems a div {
 	color: white;
 }
+
+.nodeHidden {
+	display: none;
+}
