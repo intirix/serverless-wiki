@@ -21,6 +21,14 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		matches = re.match(PATH_REGEX, self.path)
 		if matches:
 			path = matches.group(1)
+		elif self.path == '/web/' and self.server.apiGatewayClientUrl != None:
+			f = open("web/index.html")
+			html = f.read()
+			f.close()
+			html = html.replace('src="apiGateway-js-sdk/','src="'+self.server.apiGatewayClientUrl+'/apiGateway-js-sdk/')
+			self.respond(200,html)
+			return
+
 		else:
 			return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 			#return super(MyHandler,self).do_GET()
@@ -48,6 +56,11 @@ if __name__ == '__main__':
 		mydb = db.DBS3(pageBucket)
 	else:
 		mydb = db.DBMemory()
+
+	if "APIG_URL" in os.environ:
+		httpd.apiGatewayClientUrl = os.environ["APIG_URL"]
+	else:
+		httpd.apiGatewayClientUrl = None
 	httpd.serverIface = server.Server(mydb)
 	httpd.serverIface.init()
 	try:
