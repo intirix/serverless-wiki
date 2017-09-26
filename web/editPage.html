@@ -1,4 +1,5 @@
-<form ng-submit="updatePage()" novalidate>
+
+<form ng-submit="updatePage()" novalidate class="ng-class:{nodeVisible: pageState!='loading',nodeHidden: pageState=='loading'};">
   <div class="editHeader">
     <select ng-model="contentType" ng-options="x for x in contentTypes"></select>
   </div>

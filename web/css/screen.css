@@ -11,3 +11,14 @@
 .menuButtonOpen, .menuButtonClosed {
 	display: none;
 }
+
+.editBody textarea {
+	width: 70%;
+	height: 70vh;
+}
+
+@media only screen and (max-width : 600px) {
+	.editBody textarea {
+		width: 60%;
+	}
+}

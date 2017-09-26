@@ -63,15 +63,17 @@ app.config(function($routeProvider) {
     self.page="Index"
   }
   $rootScope.pageState = 'loading';
-  $scope.content = "Loading..."
+  $scope.contentType = 'mediawiki';
   $scope.contentTypes = [ "mediawiki" ];
   $scope.page = self.page;
+  $rootScope.pageTitle = self.page;
   console.log("page="+self.page)
   params={'page':self.page}
   apigClient.v1PagesPageGet(params,null,{}).then(function(result){
     $scope.content = result.data.html
     console.log(result.data);
     $scope.$apply(function () {
+      $scope.contentType = result.data.contentType;
       $scope.content = $sce.trustAsHtml(result.data.content);
       $rootScope.pageState = 'loaded';
     });
