@@ -76,6 +76,9 @@ def addCorsHeaders(resp):
 def single_func(event, context):
         print(json.dumps(event,indent=2))
 
+	if event==None or not "body" in event or not "httpMethod" in event:
+		return upload_webpage(event,context)
+
         if matches(event,"GET","/v1/pages/{page}"):
                 return get_page(event, context)
         if matches(event,"POST","/v1/pages/{page}"):
@@ -84,7 +87,18 @@ def single_func(event, context):
                 return update_page(event, context)
 	if matches(event, "GET", "/v1/search/{query}"):
 		return search(event, context)
+	if "httpMethod" in event and "OPTIONS"==event["httpMethod"]:
+		return get_options(event, context)
+	
 	return {"statusCode":404}
+
+def upload_webpage(event,context):
+	obj = LambdaCommon()
+	obj.server.copyWebsiteToWebpageBucket(os.environ["WEBSITE_BUCKET"],os.environ["REST_API"],os.environ["REST_STAGE"])
+
+
+def get_options(event, context):
+        return addCorsHeaders({"statusCode":200})
 
 
 def get_page(event, context):

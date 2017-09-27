@@ -128,11 +128,14 @@
             {
               "Effect": "Allow",
               "Action": [
-                "apigateway:GET"
+                "apigateway:GET",
+                "apigateway:POST"
               ],
               "Resource": [
                 {"Fn::Join": ["",["arn:aws:apigateway:us-east-1::/restapis/",
-                  {"Ref":"RestApi"},"/stages/prod/sdks/javascript"]]}
+                  {"Ref":"RestApi"},"/stages/prod/sdks/javascript"]]},
+                {"Fn::Join": ["",["arn:aws:apigateway:us-east-1::/restapis/",
+                  {"Ref":"RestApi"},"/deployments"]]}
               ]
             }
           ]
@@ -369,6 +372,9 @@
       "Properties" : {
         "AuthorizationType": "NONE",
         "HttpMethod": "POST",
+        "RequestParameters": {
+          "method.request.path.page": true
+        },
         "Integration": {
           "Type": "AWS_PROXY",
           "IntegrationHttpMethod": "POST",
@@ -402,6 +408,9 @@
       "Properties" : {
         "AuthorizationType": "NONE",
         "HttpMethod": "PUT",
+        "RequestParameters": {
+          "method.request.path.page": true
+        },
         "Integration": {
           "Type": "AWS_PROXY",
           "IntegrationHttpMethod": "POST",
