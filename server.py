@@ -34,7 +34,7 @@ class Server:
 			"a": ["href", "rel"],
 			"img": ["alt"]
 		}
-		self.allowedTags = ["a","img","h1","h2","h3","h4","h5","b","font","br"]
+		self.allowedTags = ["a","img","h1","h2","h3","h4","h5","b","font","br","p"]
 
 	def init(self):
 		if not self.db.doesPageExist("Index"):
