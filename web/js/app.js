@@ -82,6 +82,21 @@ app.config(function($routeProvider) {
     console.log("Failed");
     console.log(result);
   });
+  $scope.onUpdate = function() {
+    var updateParams={}
+    updateParams["page"] = $scope.page;
+    console.log(updateParams);
+    var body = {};
+    body["contentType"] = $scope.contentType;
+    body["content"] = $scope.content;
+    apigClient.v1PagesPagePut(updateParams,JSON.stringify(body),{}).then(function(result){
+      console.log("Success");
+      console.log(result);
+    }).catch(function(result){
+      console.log("Failed");
+      console.log(result);
+    });
+  };
 })
 .controller('LoginCtrl', function($scope,$rootScope,$location) {
   $scope.onLogin = function() {
