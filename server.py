@@ -74,8 +74,17 @@ class Server:
 		return obj
 
 	def updatePage(self,ctx,page,data):
-		contentType = data["contentType"]
-		content = data["content"]
+		contentType = None
+		content = None
+
+		try:
+			contentType = data["contentType"]
+			content = data["content"]
+		except KeyError:
+			raise(custom_exceptions.InvalidInput())
+
+		if content==None or type(content)!=str:
+			raise(custom_exceptions.InvalidInput())
 
 		html = None
 		if self.prerender:

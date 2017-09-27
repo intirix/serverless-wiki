@@ -53,6 +53,16 @@ class TestServer(unittest.TestCase):
 		with self.assertRaises(custom_exceptions.NotFound):
 			obj.getPage(ctx, "doesNotExist")
 
+	def testInvalidInput(self):
+		mydb = db.DBMemory()
+		obj = server.Server(mydb)
+		ctx = server.Context("<unittest>")
+		with self.assertRaises(custom_exceptions.InvalidInput):
+			obj.updatePage(ctx,"Index",{})
+		with self.assertRaises(custom_exceptions.InvalidInput):
+			obj.updatePage(ctx,"Index",{"contentType":"mediawiki","content":{}})
+
+
 if __name__ == '__main__':
 	#FORMAT = "%(asctime)-15s %(message)s"
 	#logging.basicConfig(format=FORMAT)
