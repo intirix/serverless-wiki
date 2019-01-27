@@ -10,7 +10,7 @@ import boto3
 import glob
 import zipfile
 import shutil
-import StringIO
+import io
 import custom_exceptions
 import search
 
@@ -81,10 +81,10 @@ class Server:
 			contentType = data["contentType"]
 			content = data["content"]
 		except KeyError:
-			raise(custom_exceptions.InvalidInput())
+			raise custom_exceptions.InvalidInput()
 
 		if content==None or type(content)!=str:
-			raise(custom_exceptions.InvalidInput())
+			raise custom_exceptions.InvalidInput()
 
 		html = None
 		if self.prerender:
@@ -112,7 +112,7 @@ class Server:
 		try:
 			if fmt=='mediawiki':
 				return self._renderMediaWiki(markup)
-		except Exception, e:
+		except Exception as e:
 			return self._renderText(str(e))
 		return self._renderText(markup)
 
@@ -133,7 +133,8 @@ class Server:
 
 		preprocessed_text = preprocessor.parse(markup+"\n")
 		output = parser.parse(preprocessed_text.leaves())
-		return output.leaf()
+		result = output.leaf()
+		return result
 
 	def copyWebsiteToWebpageBucket(self,bucket,restApi,stage):
 		client = boto3.client('s3')
@@ -141,21 +142,21 @@ class Server:
 			print(filename)
 			f = open(filename)
 			key = self._getWebpageKey(filename)
-			print("Uploading s3://"+bucket+'/'+key)
+			print(("Uploading s3://"+bucket+'/'+key))
 			client.put_object(Bucket=bucket,ContentType="text/html",Key=key,Body=f)
 			f.close()
 		for filename in glob.glob('web/js/*.js'):
 			print(filename)
 			f = open(filename)
 			key = self._getWebpageKey(filename)
-			print("Uploading s3://"+bucket+'/'+key)
+			print(("Uploading s3://"+bucket+'/'+key))
 			client.put_object(Bucket=bucket,ContentType="application/javascript",Key=key,Body=f)
 			f.close()
 		for filename in glob.glob('web/css/*.css'):
 			print(filename)
 			f = open(filename)
 			key = self._getWebpageKey(filename)
-			print("Uploading s3://"+bucket+'/'+key)
+			print(("Uploading s3://"+bucket+'/'+key))
 			client.put_object(Bucket=bucket,ContentType="text/css",Key=key,Body=f)
 			f.close()
 
@@ -169,7 +170,7 @@ class Server:
 		print("Downloading sdk")
 		resp = client2.get_sdk(restApiId=restApi,stageName=stage,sdkType='javascript')
 
-		buf = StringIO.StringIO()
+		buf = io.StringIO()
 		shutil.copyfileobj(resp["body"],buf)
 
 		z = zipfile.ZipFile(buf)
@@ -177,10 +178,10 @@ class Server:
 		for zfile in z.namelist():
 			print(zfile)
 			zif = z.open(zfile)
-			zbuf = StringIO.StringIO()
+			zbuf = io.StringIO()
 			shutil.copyfileobj(zif,zbuf)
 			zif.close()
-			print("Uploading s3://"+bucket+"/"+zfile)
+			print(("Uploading s3://"+bucket+"/"+zfile))
 			client.put_object(Bucket=bucket,Key=zfile,Body=zbuf.getvalue())
 
 

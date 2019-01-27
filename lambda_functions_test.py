@@ -18,19 +18,19 @@ class TestLambdaFunctions(unittest.TestCase):
 
 	def testPageBucket(self):
 		obj = LambdaCommon()
-		self.assertEquals("pagebucket",obj.getPageBucket())
+		self.assertEqual("pagebucket",obj.getPageBucket())
 
 		os.environ["PAGE_BUCKET"] = "OVERRIDE_BUCKET"
-		self.assertEquals("OVERRIDE_BUCKET",obj.getPageBucket())
+		self.assertEqual("OVERRIDE_BUCKET",obj.getPageBucket())
 
 	def testaddCorsHeaders(self):
 		resp = lambda_functions.addCorsHeaders({"statusCode":200,"body":"{}"})
-		self.assertEquals(200,resp["statusCode"])
-		self.assertEquals("{}",resp["body"])
+		self.assertEqual(200,resp["statusCode"])
+		self.assertEqual("{}",resp["body"])
 		self.assertTrue("Authorization" in resp["headers"]["Access-Control-Allow-Headers"].split(','))
 		self.assertTrue("Content-Type" in resp["headers"]["Access-Control-Allow-Headers"].split(','))
 		self.assertTrue("GET" in resp["headers"]["Access-Control-Allow-Methods"].split(','))
-		self.assertEquals("*",resp["headers"]["Access-Control-Allow-Origin"])
+		self.assertEqual("*",resp["headers"]["Access-Control-Allow-Origin"])
 
 
 if __name__ == '__main__':

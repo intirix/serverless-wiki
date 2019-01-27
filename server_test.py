@@ -11,8 +11,8 @@ class TestServer(unittest.TestCase):
 	def testRender(self):
 		obj = server.Server(None)
 
-		self.assertEquals("<body>\n<h1> Test </h1>\n</body>",obj._renderMediaWiki("= Test =\n"))
-		self.assertEquals("<body>\n<h1> Test </h1>\n</body>",obj._renderMediaWiki("= Test ="))
+		self.assertEqual("<body>\n<h1> Test </h1>\n</body>",obj._renderMediaWiki("= Test =\n"))
+		self.assertEqual("<body>\n<h1> Test </h1>\n</body>",obj._renderMediaWiki("= Test ="))
 
 	def testSanitizeEvil(self):
 		obj = server.Server(None)
@@ -20,7 +20,7 @@ class TestServer(unittest.TestCase):
 
 	def testSanitizeSafe(self):
 		obj = server.Server(None)
-		self.assertEquals("<h1>Welcome</h1>",obj.sanitize("<h1>Welcome</h1>"))
+		self.assertEqual("<h1>Welcome</h1>",obj.sanitize("<h1>Welcome</h1>"))
 
 	def testFailedRender(self):
 		obj = server.Server(None)
@@ -33,7 +33,9 @@ class TestServer(unittest.TestCase):
 		ctx = server.Context("<unittest>")
 
 		mydb.updatePage("testPage","<unittest>","mediawiki","= Test =",None)
-		self.assertEquals("\n<h1> Test </h1>\n",obj.getPage(ctx,"testPage")["html"])
+		page = obj.getPage(ctx,"testPage")
+		self.assertEqual("= Test =",page["content"])
+		self.assertTrue(page["html"].find("<h1> Test </h1>")>=0)
 
 	def testRenderedPage(self):
 		mydb = db.DBMemory()
@@ -43,13 +45,13 @@ class TestServer(unittest.TestCase):
 		rendered = "<h1>Rendered</h1>"
 
 		mydb.updatePage("testPage","<unittest>","mediawiki","= Test =",rendered)
-		self.assertEquals(rendered,obj.getPage(ctx,"testPage")["html"])
+		self.assertEqual(rendered,obj.getPage(ctx,"testPage")["html"])
 
 	def testNoFound(self):
 		mydb = db.DBMemory()
 		obj = server.Server(mydb)
 		ctx = server.Context("<unittest>")
-		self.assertEquals(False, mydb.doesPageExist("doesNotExist"))
+		self.assertEqual(False, mydb.doesPageExist("doesNotExist"))
 		with self.assertRaises(custom_exceptions.NotFound):
 			obj.getPage(ctx, "doesNotExist")
 

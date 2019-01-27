@@ -1,5 +1,5 @@
-import BaseHTTPServer
-import SimpleHTTPServer
+import http.server
+import http.server
 import server
 import db
 import logging
@@ -11,7 +11,7 @@ PORT = 8080
 PATH_REGEX = r'^\/v1\/pages\/([^\/]*)$'
 
 #class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
-class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+class MyHandler(http.server.SimpleHTTPRequestHandler):
 	def respond(self, statusCode, message):
 		self.send_response(statusCode)
 		self.end_headers()
@@ -30,7 +30,7 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 			return
 
 		else:
-			return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+			return http.server.SimpleHTTPRequestHandler.do_GET(self)
 			#return super(MyHandler,self).do_GET()
 			#self.respond(404, "Not Found")
 			#return
@@ -49,7 +49,7 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 if __name__ == '__main__':
 	logger = logging.getLogger('HTTPServer')
-	server_class = BaseHTTPServer.HTTPServer
+	server_class = http.server.HTTPServer
 	httpd = server_class(('127.0.0.1', PORT), MyHandler)
 	if "PAGE_BUCKET" in os.environ:
 		pageBucket = os.environ["PAGE_BUCKET"]
